@@ -1,0 +1,33 @@
+# ============================================================
+#   MZ HOSTING SARVER
+#   Created by MZ MINHAZ
+#   requirements.txt
+# ============================================================
+
+# --- CORE (master node hard requirements) ---
+pyTelegramBotAPI>=4.14.0
+requests>=2.31.0
+psutil>=5.9.0
+
+# --- AUTO-FIX ENGINE SUPPORT ---
+setuptools>=68.0.0
+wheel>=0.41.0
+pip>=23.0.0
+
+# --- COMMON UPLOADED-BOT DEPS (pre-bundled so autofix has less to do) ---
+python-dotenv>=1.0.0
+aiohttp>=3.9.0
+flask>=3.0.0
+beautifulsoup4>=4.12.0
+lxml>=5.0.0
+Pillow>=10.0.0
+python-telegram-bot>=20.0
+telethon>=1.34.0
+pycryptodome>=3.19.0
+rsa>=4.9
+pyaes>=1.6.1
+PyYAML>=6.0
+opencv-python>=4.8.0
+numpy>=1.26.0
+python-dateutil>=2.8.2
+pytz>=2024.1
