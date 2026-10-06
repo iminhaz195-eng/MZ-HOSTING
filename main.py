@@ -45,6 +45,10 @@ START_TIME = time.time()
 for d in (BOTS_DIR, LOGS_DIR, DATA_DIR):
     os.makedirs(d, exist_ok=True)
 
+# --- TELEGRAM BOT + RUNTIME STATE (must be defined before handlers) ---
+bot = telebot.TeleBot(BOT_TOKEN, parse_mode="Markdown")
+RUNNING_BOTS = {}   # key: "{uid}:{filename}"
+
 # ============================================================
 #              SINGLETON LOCK — prevents 409 Conflict
 # ============================================================
@@ -54,14 +58,11 @@ def acquire_lock():
         try:
             with open(LOCK_FILE, "r") as f:
                 old_pid = int(f.read().strip())
-            # is old pid alive?
             try:
                 os.kill(old_pid, 0)
-                # alive — someone else running
                 print("⚠️  Another instance is running (PID {}). Exiting.".format(old_pid))
                 sys.exit(1)
             except OSError:
-                # dead — stale lock, remove it
                 print("🧹 Removing stale lock from PID {}.".format(old_pid))
                 os.remove(LOCK_FILE)
         except Exception:
@@ -1250,13 +1251,13 @@ if __name__ == "__main__":
     print("  created by {}".format(CREATED_BY))
     print("=" * 55)
 
-    # 1) singleton lock — prevents accidental double-instance 409
+    # 1) singleton lock
     acquire_lock()
 
-    # 2) clear webhook + drop pending updates — kills remote 409
+    # 2) clear webhook + drop pending updates
     clear_telegram_state()
 
-    # 3) small settle pause
+    # 3) settle pause
     time.sleep(1)
 
     print("⚡ {} booted · by {}".format(SERVER_NAME, CREATED_BY))
@@ -1272,7 +1273,7 @@ if __name__ == "__main__":
             msg = str(e)
             if "409" in msg or "Conflict" in msg:
                 print("⚠️  409 Conflict — another instance may be running.")
-                print("   Attempting recovery in 5s...")
+                print("   Recovery in 5s...")
                 time.sleep(5)
                 clear_telegram_state()
             else:
