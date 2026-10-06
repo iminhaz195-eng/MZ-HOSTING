@@ -25,7 +25,7 @@ import psutil
 # ============================================================
 #                    MASTER CONFIG
 # ============================================================
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "8762473527:AAHpo1XHQO4rCAkrtqZbqfMRHQYRPeOLqfA")
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "8762473527:AAHhDnn6-6QEIzntFb1xrlsyc_x4FxesILs")
 OWNER_ID  = int(os.environ.get("OWNER_ID", "8255204869"))
 
 SERVER_NAME = "MZ HOSTING SARVER"
