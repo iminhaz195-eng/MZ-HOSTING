@@ -351,23 +351,24 @@ def user_menu():
     kb.add("🛠 Help")
     return kb
 
+
 # ============================================================
 #                       /start
 # ============================================================
-WELCOME_IMG = os.path.join(BASE_DIR, "welcome.jpg")
+WELCOME_GIF = os.path.join(BASE_DIR, "welcome.gif")
 
 def send_welcome(uid, caption, reply_markup=None):
-    """Send welcome.jpg with caption + optional keyboard.
-    Falls back to plain text if image missing."""
-    if os.path.exists(WELCOME_IMG):
+    """Send welcome.gif with caption + optional keyboard.
+    Falls back to plain text if GIF missing."""
+    if os.path.exists(WELCOME_GIF):
         try:
-            with open(WELCOME_IMG, "rb") as img:
-                bot.send_photo(uid, img, caption=caption,
-                               parse_mode="Markdown",
-                               reply_markup=reply_markup)
+            with open(WELCOME_GIF, "rb") as gif:
+                bot.send_animation(uid, gif, caption=caption,
+                                   parse_mode="Markdown",
+                                   reply_markup=reply_markup)
             return
         except Exception as e:
-            print("⚠️  welcome.jpg send failed:", e)
+            print("⚠️  welcome.gif send failed:", e)
     # fallback — plain text
     bot.send_message(uid, caption, parse_mode="Markdown",
                      reply_markup=reply_markup)
