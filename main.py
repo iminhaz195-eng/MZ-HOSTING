@@ -354,36 +354,62 @@ def user_menu():
 # ============================================================
 #                       /start
 # ============================================================
+WELCOME_IMG = os.path.join(BASE_DIR, "welcome.jpg")
+
+def send_welcome(uid, caption, reply_markup=None):
+    """Send welcome.jpg with caption + optional keyboard.
+    Falls back to plain text if image missing."""
+    if os.path.exists(WELCOME_IMG):
+        try:
+            with open(WELCOME_IMG, "rb") as img:
+                bot.send_photo(uid, img, caption=caption,
+                               parse_mode="Markdown",
+                               reply_markup=reply_markup)
+            return
+        except Exception as e:
+            print("⚠️  welcome.jpg send failed:", e)
+    # fallback — plain text
+    bot.send_message(uid, caption, parse_mode="Markdown",
+                     reply_markup=reply_markup)
+
 @bot.message_handler(commands=["start"])
 def cmd_start(message):
     uid = message.from_user.id
 
     if is_owner(uid):
-        bot.send_message(uid,
-            "👑 *{}*\n_created by {}_ · v{}\n\n"
-            "Welcome back, Master.\n"
-            "Full control unlocked.".format(SERVER_NAME, CREATED_BY, VERSION),
-            reply_markup=owner_menu()); return
+        send_welcome(uid,
+            "👑 *{}*\n"
+            "_created by {}_ · v{}\n\n"
+            "⚔️ *Welcome back, Master.*\n"
+            "Full control unlocked.\n"
+            "The node is awake.".format(SERVER_NAME, CREATED_BY, VERSION),
+            reply_markup=owner_menu())
+        return
 
     if is_admin(uid):
-        bot.send_message(uid,
-            "🛡 *{}*\n_created by {}_ · v{}\n\n"
-            "Welcome, Admin.\n"
+        send_welcome(uid,
+            "🛡 *{}*\n"
+            "_created by {}_ · v{}\n\n"
+            "⚔️ *Welcome, Admin.*\n"
             "Admin Panel unlocked.".format(SERVER_NAME, CREATED_BY, VERSION),
-            reply_markup=admin_menu()); return
+            reply_markup=admin_menu())
+        return
 
     if uid in DATA["approved"]:
-        bot.send_message(uid,
-            "*{}*\n_created by {}_ · v{}\n\n"
-            "✅ Access granted.\n"
+        send_welcome(uid,
+            "*{}*\n"
+            "_created by {}_ · v{}\n\n"
+            "✅ *Access granted.*\n"
             "Tap *🖥 My Bots* to begin.".format(SERVER_NAME, CREATED_BY, VERSION),
-            reply_markup=user_menu()); return
+            reply_markup=user_menu())
+        return
 
     kb = types.InlineKeyboardMarkup()
     kb.add(types.InlineKeyboardButton("🔓 Request Access", callback_data="req_access"))
-    bot.send_message(uid,
-        "*{}*\n_created by {}_ · v{}\n\n"
-        "🔒 Access is restricted.\n"
+    send_welcome(uid,
+        "*{}*\n"
+        "_created by {}_ · v{}\n\n"
+        "🔒 *Access is restricted.*\n"
         "Tap below to request hosting access.\n"
         "Admin approval required.".format(SERVER_NAME, CREATED_BY, VERSION),
         reply_markup=kb)
